@@ -1,0 +1,29 @@
+{
+  "name": "layered-text-treeview",
+  "version": "0.0.1",
+  "description": "layered-text treeview",
+  "main": "layered-text-treeview.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "layered-text",
+    "treeview"
+  ],
+  "author": "fwg",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adf0001/layered-text-treeview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adf0001/layered-text-treeview/issues"
+  },
+  "homepage": "https://github.com/adf0001/layered-text-treeview#readme",
+  "dependencies": {
+    "ele-id": "^1.0.2",
+    "htm-tool-css": "^1.0.6",
+    "layered-text": "0.0.4",
+    "ui-model-treeview": "^1.0.1"
+  }
+}
