@@ -1,6 +1,7 @@
 
 //global variable, for html page, refer tpsvr @ npm.
 layered_text_treeview = require("../layered-text-treeview.js");
+ui_model_treeview = require("ui-model-treeview");
 
 module.exports = {
 
@@ -9,7 +10,15 @@ module.exports = {
 
 		//dom
 		document.getElementById('divResult3').innerHTML =
-			"<div id='name-click-msg' style='border:1px solid lightgrey;'></div><div id='lt-treeview'></div>";
+			"<div id='name-click-msg' style='border:1px solid lightgrey;'>&nbsp;</div>" +
+			"<div>" +
+			"<span class='ht cmd' id='sp-cmd-add'>+add</span> " +
+			"<span class='ht cmd' id='sp-cmd-insert'>+insert</span> " +
+			"<span class='ht cmd' id='sp-cmd-insert-next'>+insert-next</span> &nbsp; " +
+			"<span class='ht cmd' id='sp-cmd-remove'>-remove</span> &nbsp; " +
+			"<span class='ht cmd' id='sp-cmd-update'>=update</span> " +
+			"</div>" +
+			"<div id='lt-treeview'></div>";
 
 		var el = document.getElementById('lt-treeview');
 
@@ -25,9 +34,34 @@ module.exports = {
 		el.addEventListener("click", function (evt) {
 			var target = evt.target;
 			if (target && target.classList.contains("tree-name")) {
-				document.getElementById('name-click-msg').innerHTML = target.textContent;
+				var s = target.textContent;
+				if ((s.length > 30)) s = s.slice(0, 30) + "...";
+
+				var prop = tv.getDataProperty(target);
+				s += " prop=" + JSON.stringify(prop);
+
+				document.getElementById('name-click-msg').innerHTML = s;
 			}
 		})
+
+		document.getElementById('sp-cmd-add').onclick = function () {
+			if (tv.lastSelected) tv.add(null, "" + (new Date()), { tm: (new Date()).getTime() });
+			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() }, false, true);
+		};
+		document.getElementById('sp-cmd-insert').onclick = function () {
+			if (tv.lastSelected) tv.add(null, "" + new Date(), { tm: (new Date()).getTime() }, true);
+			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() }, true, true);
+		};
+		document.getElementById('sp-cmd-insert-next').onclick = function () {
+			if (tv.lastSelected) tv.insertNext(null, "" + new Date(), { tm: (new Date()).getTime() });
+			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() }, false, true);
+		};
+		document.getElementById('sp-cmd-remove').onclick = function () {
+			tv.remove();	//remove the selected
+		};
+		document.getElementById('sp-cmd-update').onclick = function () {
+			tv.update(null, "" + (new Date()), { tm: (new Date()).getTime() });	//update the selected
+		};
 
 		return "ui-test";
 	},
