@@ -16,7 +16,8 @@ module.exports = {
 			"<span class='ht cmd' id='sp-cmd-insert'>+insert</span> " +
 			"<span class='ht cmd' id='sp-cmd-insert-next'>+insert-next</span> &nbsp; " +
 			"<span class='ht cmd' id='sp-cmd-remove'>-remove</span> &nbsp; " +
-			"<span class='ht cmd' id='sp-cmd-update'>=update</span> " +
+			"<span class='ht cmd' id='sp-cmd-update'>=update</span> &nbsp; " +
+			"<label><input type='checkbox' id='chk-update-select' checked/>update-select</label>" +
 			"</div>" +
 			"<div id='lt-treeview'></div>";
 
@@ -29,13 +30,13 @@ module.exports = {
 			]
 		];
 
-		var tv = layered_text_treeview.class(el, data);
+		var tv = new layered_text_treeview.class(el, data);
 
 		el.addEventListener("click", function (evt) {
 			var target = evt.target;
 			if (target && target.classList.contains("tree-name")) {
 				var s = target.textContent;
-				if ((s.length > 30)) s = s.slice(0, 30) + "...";
+				if ((s.length > 50)) s = s.slice(0, 50) + "...";
 
 				var prop = tv.getDataProperty(target);
 				s += " prop=" + JSON.stringify(prop);
@@ -45,22 +46,25 @@ module.exports = {
 		})
 
 		document.getElementById('sp-cmd-add').onclick = function () {
-			if (tv.lastSelected) tv.add(null, "" + (new Date()), { tm: (new Date()).getTime() });
-			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() }, false, true);
+			tv.add(tv.selectedName || el, "" + (new Date()), { tm: (new Date()).getTime() },
+				{ updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-insert').onclick = function () {
-			if (tv.lastSelected) tv.add(null, "" + new Date(), { tm: (new Date()).getTime() }, true);
-			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() }, true, true);
+			tv.add(tv.selectedName || el, "" + new Date(), { tm: (new Date()).getTime() },
+				{ insert: true, updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-insert-next').onclick = function () {
-			if (tv.lastSelected) tv.insertNext(null, "" + new Date(), { tm: (new Date()).getTime() });
-			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() }, false, true);
+			if (tv.selectedName) tv.insertNext(null, "" + new Date(), { tm: (new Date()).getTime() },
+				{ updateSelect: _ele('chk-update-select').checked });
+			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() },
+				{ updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-remove').onclick = function () {
-			tv.remove();	//remove the selected
+			tv.remove(null, { updateSelect: _ele('chk-update-select').checked });	//remove the selected
 		};
 		document.getElementById('sp-cmd-update').onclick = function () {
-			tv.update(null, "" + (new Date()), { tm: (new Date()).getTime() });	//update the selected
+			tv.update(null, "" + (new Date()), { tm: (new Date()).getTime() },		//update the selected
+				{ updateSelect: _ele('chk-update-select').checked });
 		};
 
 		return "ui-test";

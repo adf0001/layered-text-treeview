@@ -21,11 +21,12 @@
   },
   "homepage": "https://github.com/adf0001/layered-text-treeview#readme",
   "dependencies": {
-    "dispatch-event-by-name": "^1.0.3",
+    "create-assign": "^1.0.3",
     "ele-id": "^1.0.2",
     "htm-tool-css": "^1.0.6",
     "is-simple-object": "^1.0.6",
     "layered-text": "^0.1.6",
+    "simple-text-treeview": "^0.1.2",
     "ui-model-treeview": "^1.0.4"
   }
 }
