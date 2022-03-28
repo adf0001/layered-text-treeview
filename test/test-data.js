@@ -16,7 +16,8 @@ module.exports = {
 			"<span class='ht cmd' id='sp-cmd-insert'>+insert</span> " +
 			"<span class='ht cmd' id='sp-cmd-insert-next'>+insert-next</span> &nbsp; " +
 			"<span class='ht cmd' id='sp-cmd-remove'>-remove</span> " +
-			"<span class='ht cmd' id='sp-cmd-remove-prop'>-remove prop</span> &nbsp; " +
+			"<span class='ht cmd' id='sp-cmd-remove-prop'>-remove prop</span> " +
+			"<span class='ht cmd' id='sp-cmd-remove-children'>-remove children</span> &nbsp; " +
 			"<span class='ht cmd' id='sp-cmd-update'>=update</span> &nbsp; " +
 			"<label><input type='checkbox' id='chk-update-select' checked/>update-select</label>" +
 			"</div>" +
@@ -65,6 +66,9 @@ module.exports = {
 		};
 		document.getElementById('sp-cmd-remove-prop').onclick = function () {
 			tv.removeProperty(null, { updateSelect: _ele('chk-update-select').checked });
+		};
+		document.getElementById('sp-cmd-remove-children').onclick = function () {
+			tv.removeAllChildren(null, { updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-update').onclick = function () {
 			tv.update(null, "" + (new Date()), { tm: (new Date()).getTime() },		//update the selected

@@ -229,28 +229,34 @@ layeredTextTreeviewClass.prototype = create_assign(
 		//return true if finished
 		remove: function (elNode, options) {
 			//arguments
+			var onlyChildren = options && options.onlyChildren;
+
 			var nodeInfo = this.getNodeInfo(elNode);
-			if (!nodeInfo || nodeInfo[this.INDEX_INFO_CHILDREN] || nodeInfo[this.INDEX_INFO_CONTAINER]) return null;
+			if (!nodeInfo) return null;
+			if (nodeInfo[this.INDEX_INFO_CHILDREN] && !onlyChildren) return null;
 
 			elNode = nodeInfo[this.INDEX_INFO_NODE];
+			var isTop = nodeInfo[this.INDEX_INFO_CONTAINER];
 
 			//get data before dom changed
-			var di = this.getDataInfo(elNode);
+			var di = isTop ? null : this.getDataInfo(elNode);
 
 			//prepare data-index set to be removed
 			var dikArray = [];	//data-index key array
 
 			//check if the parent sub is empty after removing
-			if (di[INDEX_DATA].length === layered_text.NORMALIZE_GROUP_COUNT) {
-				if (di[INDEX_INDEX] !== 0 || elNode.parentNode.childNodes.length !== 1) {
-					console.error("parent sub length fail");
+			if (di && !onlyChildren) {
+				if (di[INDEX_DATA].length === layered_text.NORMALIZE_GROUP_COUNT) {
+					if (di[INDEX_INDEX] !== 0 || elNode.parentNode.childNodes.length !== 1) {
+						console.error("parent sub length fail");
+						return;
+					}
+					dikArray.push(elNode.parentNode.id);
+				}
+				else if (elNode.parentNode.childNodes.length === 1) {
+					console.error("parent node children number fail");
 					return;
 				}
-				dikArray.push(elNode.parentNode.id);
-			}
-			else if (elNode.parentNode.childNodes.length === 1) {
-				console.error("parent node children number fail");
-				return;
 			}
 
 			//all descendant sub data index
@@ -259,7 +265,7 @@ layeredTextTreeviewClass.prototype = create_assign(
 			for (i = 0; i < imax; i++) { dikArray.push(nds[i].id); }
 
 			//prepare next selected
-			var elSelect = this.prepareRemoveSelect(elNode);
+			var elSelect = this.prepareRemoveSelect(elNode, onlyChildren);
 
 			//options
 			var updateSelect = options && options.updateSelect;
@@ -272,7 +278,7 @@ layeredTextTreeviewClass.prototype = create_assign(
 			if (!_base.remove.call(this, nodeInfo, options)) return false;
 
 			//remove data
-			layered_text.removeByIndex(di[INDEX_DATA], di[INDEX_INDEX]);
+			layered_text.removeByIndex(di[INDEX_DATA], di[INDEX_INDEX], null, !!onlyChildren);
 
 			//remove data index set
 			imax = dikArray.length;
@@ -284,10 +290,8 @@ layeredTextTreeviewClass.prototype = create_assign(
 
 			console.log(this.data, this.dataIndex);
 
-			if (updateSelect) {
-				if (elSelect) this.clickName(elSelect);
-				else if (elSelect === null) this.selectedName = null;	//just clean selected
-			}
+			//update select state
+			this.updateRemoveSelect(elSelect, updateSelect);
 
 			return true;
 		},
