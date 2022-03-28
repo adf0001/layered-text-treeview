@@ -51,8 +51,12 @@ layeredTextTreeviewClass.prototype = create_assign(
 			setTimeout(function () { elView.scrollTop = 0; }, 0);
 		},
 
+		showProperty: null,		//"show"(true)/"ellipsis"/"first"/"hide"(false/null)
+
 		//to remove property elememt, set property===false
-		updateProperty: function (elNode, property) {
+		updateProperty: function (elNode, property, full) {
+			if (!this.showProperty || this.showProperty === "hide") return;
+
 			var el;
 			if (property === false) {
 				el = ui_model_treeview.nodePart(elNode, "lt-tree-prop");
@@ -61,8 +65,38 @@ layeredTextTreeviewClass.prototype = create_assign(
 			}
 
 			if (!layered_text.isEmptyProp(property)) {
-				el = ui_model_treeview.nodePart(elNode, "lt-tree-prop", { html: "<span style='margin-left:1.5em;color:gray;cursor:default;'></span>" });
-				el.textContent = JSON.stringify(property);
+				el = ui_model_treeview.nodePart(elNode, "lt-tree-prop",
+					{ html: "<span style='margin-left:1.5em;color:gray;cursor:default;'></span>" });
+
+				var s = el.textContent;
+
+				if (!full) {
+					if (this.showProperty == "ellipsis") {
+						if (!s || s === "{...}") s = "{...}";
+						else full = true;
+					}
+					else if (this.showProperty == "first") {
+						if (!s || s.slice(-2) === "} ") {		//space at end as flag
+							var cnt = 0;
+							for (var i in property) {
+								cnt++;
+								if (cnt > 1) break;
+								s = "{" + i + ":" + JSON.stringify(property[i]);
+							}
+							s += ((cnt > 1) ? ",...} " : "} ");		//space at end as flag
+						}
+						else full = true;
+					}
+				}
+
+				if (full) s = JSON.stringify(property).replace(/\"([^\:\'\"\\\&\s]+)\"\:/g, "$1:");
+
+
+				el.textContent = s;
+			}
+			else {
+				el = ui_model_treeview.nodePart(elNode, "lt-tree-prop");
+				if (el) el.textContent = "";
 			}
 		},
 
@@ -122,12 +156,12 @@ layeredTextTreeviewClass.prototype = create_assign(
 		},
 
 		getDataSub: function (elNode, dataInfo) {
-			dataInfo = this.getDataInfo(elNode, dataInfo);
+			dataInfo = (elNode instanceof Array) ? elNode : this.getDataInfo(elNode, dataInfo);
 			return dataInfo[INDEX_DATA][dataInfo[INDEX_INDEX] + layered_text.INDEX_N_SUB];
 		},
 
 		getDataProperty: function (elNode, dataInfo) {
-			dataInfo = this.getDataInfo(elNode, dataInfo);
+			dataInfo = (elNode instanceof Array) ? elNode : this.getDataInfo(elNode, dataInfo);
 			return dataInfo[INDEX_DATA][dataInfo[INDEX_INDEX] + layered_text.INDEX_N_PROP];
 		},
 
@@ -147,6 +181,11 @@ layeredTextTreeviewClass.prototype = create_assign(
 					ui_model_treeview.nodeChildren(elNode).style.display = "";
 					this.updateChildren(elNode, this.getDataSub(elNode));
 				}
+			}
+			else if (el.classList.contains("lt-tree-prop")) {
+				var elNode = ui_model_treeview.getNode(el);
+				this.updateProperty(elNode, this.getDataProperty(elNode), true);
+				this.clickName(el);
 			}
 		},
 
@@ -323,10 +362,11 @@ layeredTextTreeviewClass.prototype = create_assign(
 				elNode.setAttribute("lt-text", text);	//cache to confirm later
 			}
 
-			this.updateProperty(elNode, layered_text.isEmptyProp(property) ? false : property);
-
 			layered_text.updateByIndex(di[INDEX_DATA], di[INDEX_INDEX], text, property);
 			console.log(this.data, this.dataIndex);
+
+			property = this.getDataProperty(di);
+			this.updateProperty(elNode, layered_text.isEmptyProp(property) ? false : property);
 
 			if (options && options.updateSelect) this.clickName(elNode);
 

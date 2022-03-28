@@ -32,7 +32,14 @@ module.exports = {
 			]
 		];
 
-		var tv = new layered_text_treeview.class(el, data);
+		var tv = new layered_text_treeview.class(el);
+
+		tv.showProperty = "ellipsis";
+		//tv.showProperty = "first";
+		//tv.showProperty = true;
+		//tv.showProperty = false;
+
+		tv.updateView(data);
 
 		el.addEventListener("click", function (evt) {
 			var target = evt.target;
