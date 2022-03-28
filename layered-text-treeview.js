@@ -51,8 +51,23 @@ layeredTextTreeviewClass.prototype = create_assign(
 			setTimeout(function () { elView.scrollTop = 0; }, 0);
 		},
 
+		//to remove property elememt, set property===false
+		updateProperty: function (elNode, property) {
+			var el;
+			if (property === false) {
+				el = ui_model_treeview.nodePart(elNode, "lt-tree-prop");
+				if (el) el.parentNode.removeChild(el);
+				return;
+			}
+
+			if (!layered_text.isEmptyProp(property)) {
+				el = ui_model_treeview.nodePart(elNode, "lt-tree-prop", { html: "<span style='margin-left:1.5em;color:gray;cursor:default;'></span>" });
+				el.textContent = JSON.stringify(property);
+			}
+		},
+
 		updateChildren: function (parentNode, layeredText) {
-			var i, imax = layeredText.length, el, sub;
+			var i, imax = layeredText.length, el, sub, prop;
 			var nodeInfo = this.getNodeInfo(parentNode);
 
 			for (i = 0; i < imax; i += layered_text.NORMALIZE_GROUP_COUNT) {
@@ -67,6 +82,8 @@ layeredTextTreeviewClass.prototype = create_assign(
 					//data index of children
 					this.dataIndex[ele_id(ui_model_treeview.nodeChildren(el, true))] = sub;
 				}
+
+				this.updateProperty(el, layeredText[i + layered_text.INDEX_N_PROP]);
 			}
 			if (el) {
 				//data index
@@ -178,6 +195,7 @@ layeredTextTreeviewClass.prototype = create_assign(
 			}
 
 			elNew.setAttribute("lt-text", text);	//cache to confirm later
+			this.updateProperty(elNew, property);
 
 			if (!options.insert && !isTop) {
 				//parent children data index
@@ -275,6 +293,7 @@ layeredTextTreeviewClass.prototype = create_assign(
 		},
 
 		//return the updated node
+		//set property=false to remove the property
 		update: function (elNode, text, property, options) {
 			//arguments
 			var nodeInfo = this.getNodeInfo(elNode);
@@ -284,7 +303,7 @@ layeredTextTreeviewClass.prototype = create_assign(
 
 			if ((typeof text !== "string" && text) ||	//text abnormal
 				(property && !is_simple_object(property)) ||	//property abnormal
-				(typeof text !== "string" && !property)		//nothing update
+				(typeof text !== "string" && !property && property !== false)		//nothing update
 			) {
 				console.log("invalid data", text, property);
 				return null;
@@ -300,12 +319,18 @@ layeredTextTreeviewClass.prototype = create_assign(
 				elNode.setAttribute("lt-text", text);	//cache to confirm later
 			}
 
+			this.updateProperty(elNode, layered_text.isEmptyProp(property) ? false : property);
+
 			layered_text.updateByIndex(di[INDEX_DATA], di[INDEX_INDEX], text, property);
 			console.log(this.data, this.dataIndex);
 
 			if (options && options.updateSelect) this.clickName(elNode);
 
 			return elNode;
+		},
+
+		removeProperty: function (elNode, options) {
+			return this.update(elNode, null, false, options);	//false to remove property
 		},
 
 	}
