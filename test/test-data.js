@@ -32,6 +32,7 @@ module.exports = {
 			]
 		];
 
+		//.class(el, layeredText)
 		var tv = new layered_text_treeview.class(el);
 
 		tv.showProperty = "ellipsis";
@@ -39,6 +40,7 @@ module.exports = {
 		//tv.showProperty = true;
 		//tv.showProperty = false;
 
+		//.updateView(layeredText)
 		tv.updateView(data);
 
 		el.addEventListener("click", function (evt) {
@@ -47,6 +49,7 @@ module.exports = {
 				var s = target.textContent;
 				if ((s.length > 50)) s = s.slice(0, 50) + "...";
 
+				//.getDataInfo(elNode, dataInfo)
 				var prop = tv.getDataProperty(target);
 				s += " prop=" + JSON.stringify(prop);
 
@@ -55,6 +58,7 @@ module.exports = {
 		})
 
 		document.getElementById('sp-cmd-add').onclick = function () {
+			//.add(elNode, text, property, options)
 			tv.add(tv.selectedName || el, "" + (new Date()), { tm: (new Date()).getTime() },
 				{ updateSelect: _ele('chk-update-select').checked });
 		};
@@ -63,12 +67,14 @@ module.exports = {
 				{ insert: true, updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-insert-next').onclick = function () {
+			//.insertNext(elNode, text, property, options)
 			if (tv.selectedName) tv.insertNext(null, "" + new Date(), { tm: (new Date()).getTime() },
 				{ updateSelect: _ele('chk-update-select').checked });
 			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() },
 				{ updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-remove').onclick = function () {
+			//.remove(elNode, options)
 			tv.remove(null, { updateSelect: _ele('chk-update-select').checked });	//remove the selected
 		};
 		document.getElementById('sp-cmd-remove-prop').onclick = function () {
@@ -78,6 +84,7 @@ module.exports = {
 			tv.removeAllChildren(null, { updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-update').onclick = function () {
+			//.update(elNode, text, property, options)
 			tv.update(null, "" + (new Date()), { tm: (new Date()).getTime() },		//update the selected
 				{ updateSelect: _ele('chk-update-select').checked });
 		};
