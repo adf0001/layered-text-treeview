@@ -1,6 +1,6 @@
 {
   "name": "layered-text-treeview",
-  "version": "0.0.1",
+  "version": "0.1.2",
   "description": "layered-text treeview",
   "main": "layered-text-treeview.js",
   "scripts": {
@@ -23,10 +23,9 @@
   "dependencies": {
     "create-assign": "^1.0.3",
     "ele-id": "^1.0.2",
-    "htm-tool-css": "^1.0.6",
     "is-simple-object": "^1.0.6",
-    "layered-text": "^0.1.10",
-    "simple-text-treeview": "^0.1.4",
+    "layered-text": "^0.1.11",
+    "simple-text-treeview": "^0.1.6",
     "ui-model-treeview": "^1.0.4"
   }
 }

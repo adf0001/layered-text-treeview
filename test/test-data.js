@@ -2,6 +2,7 @@
 //global variable, for html page, refer tpsvr @ npm.
 layered_text_treeview = require("../layered-text-treeview.js");
 ui_model_treeview = require("ui-model-treeview");
+layered_text = require("layered-text");
 
 module.exports = {
 
@@ -12,14 +13,29 @@ module.exports = {
 		document.getElementById('divResult3').innerHTML =
 			"<div id='name-click-msg' style='border:1px solid lightgrey;'>&nbsp;</div>" +
 			"<div>" +
-			"<span class='ht cmd' id='sp-cmd-add'>+add</span> " +
-			"<span class='ht cmd' id='sp-cmd-insert'>+insert</span> " +
-			"<span class='ht cmd' id='sp-cmd-insert-next'>+insert-next</span> &nbsp; " +
+			"<span class='ht cmd' id='sp-cmd-add'>+add</span>/" +
+			"<span class='ht cmd' id='sp-cmd-add-lt' title='layered-text'>lt</span> " +
+			"<span class='ht cmd' id='sp-cmd-insert'>+insert</span>/" +
+			"<span class='ht cmd' id='sp-cmd-insert-lt' title='layered-text'>lt</span> " +
+			"<span class='ht cmd' id='sp-cmd-insert-next'>+insert-next</span>/" +
+			"<span class='ht cmd' id='sp-cmd-insert-next-lt' title='layered-text'>lt</span> &nbsp; " +
 			"<span class='ht cmd' id='sp-cmd-remove'>-remove</span> " +
 			"<span class='ht cmd' id='sp-cmd-remove-prop'>-remove prop</span> " +
 			"<span class='ht cmd' id='sp-cmd-remove-children'>-remove children</span> &nbsp; " +
 			"<span class='ht cmd' id='sp-cmd-update'>=update</span> &nbsp; " +
-			"<label><input type='checkbox' id='chk-update-select' checked/>update-select</label>" +
+			"<label><input type='checkbox' id='chk-update-select' checked/>update-select</label> &nbsp; " +
+			"depth<select id='selDepth'>" +
+			"	<option value='1' selected>1/other</option>" +
+			"	<option value='2'>2</option>" +
+			"	<option value='3'>3</option>" +
+			"	<option value='-1'>-1/all</option>" +
+			"</select> &nbsp; " +
+			"showProperty<select id='selShowProperty'>" +
+			"	<option value='ellipsis'>ellipsis</option>" +
+			"	<option value='first'>first</option>" +
+			"	<option value='true'>true</option>" +
+			"	<option value='' selected>false</option>" +
+			"</select>" +
 			"</div>" +
 			"<div id='lt-treeview'></div>";
 
@@ -35,13 +51,13 @@ module.exports = {
 		//.class(el, layeredText)
 		var tv = new layered_text_treeview.class(el);
 
-		tv.showProperty = "ellipsis";
+		//tv.showProperty = "ellipsis";
 		//tv.showProperty = "first";
 		//tv.showProperty = true;
-		//tv.showProperty = false;
+		tv.showProperty = false;
 
 		//.updateView(layeredText)
-		tv.updateView(data);
+		tv.updateView(layered_text.normalize(data, true));
 
 		el.addEventListener("click", function (evt) {
 			var target = evt.target;
@@ -57,14 +73,26 @@ module.exports = {
 			}
 		})
 
+		document.getElementById('selShowProperty').onchange = function (evt) {
+			tv.showProperty = evt.target.value;
+		};
+
 		document.getElementById('sp-cmd-add').onclick = function () {
 			//.add(elNode, text, property, options)
 			tv.add(tv.selectedName || el, "" + (new Date()), { tm: (new Date()).getTime() },
 				{ updateSelect: _ele('chk-update-select').checked });
 		};
+		document.getElementById('sp-cmd-add-lt').onclick = function () {
+			tv.add(tv.selectedName || el, layered_text.normalize(data, true), null,
+				{ updateSelect: _ele('chk-update-select').checked, depth: _ele('selDepth').value });
+		};
 		document.getElementById('sp-cmd-insert').onclick = function () {
 			tv.add(tv.selectedName || el, "" + new Date(), { tm: (new Date()).getTime() },
 				{ insert: true, updateSelect: _ele('chk-update-select').checked });
+		};
+		document.getElementById('sp-cmd-insert-lt').onclick = function () {
+			tv.add(tv.selectedName || el, layered_text.normalize(data, true), null,
+				{ insert: true, updateSelect: _ele('chk-update-select').checked, depth: _ele('selDepth').value });
 		};
 		document.getElementById('sp-cmd-insert-next').onclick = function () {
 			//.insertNext(elNode, text, property, options)
@@ -72,6 +100,13 @@ module.exports = {
 				{ updateSelect: _ele('chk-update-select').checked });
 			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() },
 				{ updateSelect: _ele('chk-update-select').checked });
+		};
+		document.getElementById('sp-cmd-insert-next-lt').onclick = function () {
+			//.insertNext(elNode, text, property, options)
+			if (tv.selectedName) tv.insertNext(null, layered_text.normalize(data, true), null,
+				{ updateSelect: _ele('chk-update-select').checked, depth: _ele('selDepth').value });
+			else tv.add(el, layered_text.normalize(data, true), null,
+				{ updateSelect: _ele('chk-update-select').checked, depth: _ele('selDepth').value });
 		};
 		document.getElementById('sp-cmd-remove').onclick = function () {
 			//.remove(elNode, options)

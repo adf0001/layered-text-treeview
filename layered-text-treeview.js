@@ -8,7 +8,6 @@ var ui_model_treeview = require("ui-model-treeview");
 var ele_id = require("ele-id");
 var layered_text = require("layered-text");
 var is_simple_object = require("is-simple-object");
-var htCss = require("htm-tool-css");	//require ht css
 
 var INDEX_DATA = 0;
 var INDEX_INDEX = 1;
@@ -54,11 +53,9 @@ layeredTextTreeviewClass.prototype = create_assign(
 		showProperty: null,		//"show"(true)/"ellipsis"/"first"/"hide"(false/null)
 
 		//to remove property elememt, set property===false
-		updateProperty: function (elNode, property, full) {
-			if (!this.showProperty || this.showProperty === "hide") return;
-
+		updateProperty: function (elNode, property, expanded) {
 			var el;
-			if (property === false) {
+			if (property === false || !this.showProperty || this.showProperty === "hide") {
 				el = ui_model_treeview.nodePart(elNode, "lt-tree-prop");
 				if (el) el.parentNode.removeChild(el);
 				return;
@@ -70,26 +67,29 @@ layeredTextTreeviewClass.prototype = create_assign(
 
 				var s = el.textContent;
 
-				if (!full) {
+				if (!expanded) {
 					if (this.showProperty == "ellipsis") {
-						if (!s || s === "{...}") s = "{...}";
-						else full = true;
+						if (!s || s.slice(-2) === "} ") s = "{...} ";	//space at end as not-expanded flag
+						else expanded = true;
 					}
 					else if (this.showProperty == "first") {
-						if (!s || s.slice(-2) === "} ") {		//space at end as flag
+						if (!s || s.slice(-2) === "} ") {		//space at end as not-expanded flag
 							var cnt = 0;
 							for (var i in property) {
 								cnt++;
 								if (cnt > 1) break;
 								s = "{" + i + ":" + JSON.stringify(property[i]);
 							}
-							s += ((cnt > 1) ? ",...} " : "} ");		//space at end as flag
+							s += ((cnt > 1) ? ",...} " : "} ");		//space at end as not-expanded flag
 						}
-						else full = true;
+						else expanded = true;
+					}
+					else {
+						s = JSON.stringify(property).replace(/\"([^\:\'\"\\\&\s]+)\"\:/g, "$1:") + " ";		//space at end as not-expanded flag
 					}
 				}
 
-				if (full) s = JSON.stringify(property).replace(/\"([^\:\'\"\\\&\s]+)\"\:/g, "$1:");
+				if (expanded) s = JSON.stringify(property).replace(/\"([^\:\'\"\\\&\s]+)\"\:/g, "$1:");
 
 
 				el.textContent = s;
@@ -111,8 +111,8 @@ layeredTextTreeviewClass.prototype = create_assign(
 
 				sub = layeredText[i + layered_text.INDEX_N_SUB];
 				if (sub && sub.length) {
-					ui_model_treeview.setToExpandState(el, true);
-					htCss.add(ui_model_treeview.nodeToExpand(el), "cmd");	//cursor & cmd
+					this.updateToExpand(el, true);
+
 					//data index of children
 					this.dataIndex[ele_id(ui_model_treeview.nodeChildren(el, true))] = sub;
 				}
@@ -176,9 +176,8 @@ layeredTextTreeviewClass.prototype = create_assign(
 				if (!elChildren || !elChildren.hasChildNodes()) {
 					var elNode = ui_model_treeview.getNode(el);
 
-					ui_model_treeview.setToExpandState(elNode, false);	//update state before adding children, for the base will call the click by the state.
+					this.updateToExpand(elNode, false);
 
-					ui_model_treeview.nodeChildren(elNode).style.display = "";
 					this.updateChildren(elNode, this.getDataSub(elNode));
 				}
 			}
@@ -192,6 +191,7 @@ layeredTextTreeviewClass.prototype = create_assign(
 		//override operation
 
 		//return the added node
+		//options.depth: 1-N, -1(all), for adding layered-text.
 		add: function (elNode, text, property, options) {
 			//arguments
 			var nodeInfo = this.getNodeInfo(elNode);
@@ -204,9 +204,53 @@ layeredTextTreeviewClass.prototype = create_assign(
 			//options
 			options = options ? Object.create(options) : {};
 			options.insert = options.insert && !isNodeChildren;	//only append for node children
+			if (options.depth > 0) options.depth--;
 
 			var updateSelect = options.updateSelect;
 			options.updateSelect = false;		//stop update select
+
+			//text is array/layeredText
+			if (text && (text instanceof Array)) {
+				text = layered_text.normalize(text);
+
+				var i, imax = text.length, elFirst = null, elNew, sub, subOptions = options, di;
+				if (subOptions.insert) {	//only add for sub
+					subOptions = Object.create(options);
+					subOptions.insert = false;
+				}
+
+				for (i = 0; i < imax; i += layered_text.NORMALIZE_GROUP_COUNT) {
+					elNew = this.add(nodeInfo, text[i + layered_text.INDEX_N_TEXT], text[i + layered_text.INDEX_N_PROP], options);
+					if (!elNew) {
+						console.warn("add layered-text return null");
+						return elFirst;
+					}
+					if (!elFirst) elFirst = elNew;
+
+					sub = text[i + layered_text.INDEX_N_SUB];
+					if (sub) {
+						if (options.depth > 0 || options.depth < 0) {
+							//add and expand
+							elNew = this.add(elNew, text[i + layered_text.INDEX_N_SUB], null, subOptions);
+							if (!elNew) {
+								console.warn("add sub layered-text return null");
+								return elFirst;
+							}
+						}
+						else {
+							//add 1 level
+							di = this.getDataInfo(elNew);
+							di[INDEX_DATA][di[INDEX_INDEX] + layered_text.INDEX_N_SUB] = sub
+
+							this.updateToExpand(elNew, true);
+
+							this.dataIndex[ele_id(ui_model_treeview.nodeChildren(elNew, true))] = sub;
+						}
+					}
+				}
+				if (updateSelect && elFirst) this.clickName(elFirst);	//select the first
+				return elFirst;		//return the first
+			}
 
 			if ((typeof text !== "string") ||
 				(property && !is_simple_object(property))) {
