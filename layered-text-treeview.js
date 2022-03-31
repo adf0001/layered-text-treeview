@@ -288,7 +288,7 @@ layeredTextTreeviewClass.prototype = create_assign(
 					this.dataIndex[eid] = di[INDEX_DATA][di[INDEX_INDEX] + layered_text.INDEX_N_SUB];
 				}
 			}
-			console.log(this.data, this.dataIndex);
+			//console.log(this.data, this.dataIndex);
 
 			if (updateSelect) this.clickName(elNew);
 
@@ -371,7 +371,7 @@ layeredTextTreeviewClass.prototype = create_assign(
 				if (ndid && (ndid in this.dataIndex) && ndid != this.containerId) delete this.dataIndex[ndid];
 			}
 
-			console.log(this.data, this.dataIndex);
+			//console.log(this.data, this.dataIndex);
 
 			//update select state
 			this.updateRemoveSelect(elSelect, updateSelect);
@@ -407,7 +407,7 @@ layeredTextTreeviewClass.prototype = create_assign(
 			}
 
 			layered_text.updateByIndex(di[INDEX_DATA], di[INDEX_INDEX], text, property);
-			console.log(this.data, this.dataIndex);
+			//console.log(this.data, this.dataIndex);
 
 			property = this.getDataProperty(di);
 			this.updateProperty(elNode, layered_text.isEmptyProp(property) ? false : property);
