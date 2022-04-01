@@ -19,9 +19,6 @@ layeredTextTreeviewClass.prototype = {
 
 	base: null,		//a simple-text-treeview object
 
-	INDEX_DATA: INDEX_DATA,
-	INDEX_INDEX: INDEX_INDEX,
-
 	data: null,		//a normalized layered-text object, refer layered-text @ npm
 	dataIndex: null,	//map eid of node children, to layered-text
 
@@ -429,5 +426,8 @@ layeredTextTreeviewClass.prototype = {
 };
 
 //module
+
+exports.INDEX_DATA = INDEX_DATA;
+exports.INDEX_INDEX = INDEX_INDEX;
 
 exports.class = layeredTextTreeviewClass;
