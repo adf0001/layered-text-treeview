@@ -38,7 +38,7 @@ tv.updateView(data);
 
 document.getElementById('sp-cmd-add').onclick = function () {
 	//.add(elNode, text, property, options)
-	tv.add(tv.selectedName || el, "" + (new Date()), { tm: (new Date()).getTime() },
+	tv.add(tv.getSelected() || el, "" + (new Date()), { tm: (new Date()).getTime() },
 		{ updateSelect: true });
 };
 

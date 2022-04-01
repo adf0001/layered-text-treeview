@@ -79,31 +79,31 @@ module.exports = {
 
 		document.getElementById('sp-cmd-add').onclick = function () {
 			//.add(elNode, text, property, options)
-			tv.add(tv.selectedName || el, "" + (new Date()), { tm: (new Date()).getTime() },
+			tv.add(tv.getSelected() || el, "" + (new Date()), { tm: (new Date()).getTime() },
 				{ updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-add-lt').onclick = function () {
-			tv.add(tv.selectedName || el, layered_text.normalize(data, true), null,
+			tv.add(tv.getSelected() || el, layered_text.normalize(data, true), null,
 				{ updateSelect: _ele('chk-update-select').checked, depth: _ele('selDepth').value });
 		};
 		document.getElementById('sp-cmd-insert').onclick = function () {
-			tv.add(tv.selectedName || el, "" + new Date(), { tm: (new Date()).getTime() },
+			tv.add(tv.getSelected() || el, "" + new Date(), { tm: (new Date()).getTime() },
 				{ insert: true, updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-insert-lt').onclick = function () {
-			tv.add(tv.selectedName || el, layered_text.normalize(data, true), null,
+			tv.add(tv.getSelected() || el, layered_text.normalize(data, true), null,
 				{ insert: true, updateSelect: _ele('chk-update-select').checked, depth: _ele('selDepth').value });
 		};
 		document.getElementById('sp-cmd-insert-next').onclick = function () {
 			//.insertNext(elNode, text, property, options)
-			if (tv.selectedName) tv.insertNext(null, "" + new Date(), { tm: (new Date()).getTime() },
+			if (tv.getSelected()) tv.insertNext(null, "" + new Date(), { tm: (new Date()).getTime() },
 				{ updateSelect: _ele('chk-update-select').checked });
 			else tv.add(el, "" + (new Date()), { tm: (new Date()).getTime() },
 				{ updateSelect: _ele('chk-update-select').checked });
 		};
 		document.getElementById('sp-cmd-insert-next-lt').onclick = function () {
 			//.insertNext(elNode, text, property, options)
-			if (tv.selectedName) tv.insertNext(null, layered_text.normalize(data, true), null,
+			if (tv.getSelected()) tv.insertNext(null, layered_text.normalize(data, true), null,
 				{ updateSelect: _ele('chk-update-select').checked, depth: _ele('selDepth').value });
 			else tv.add(el, layered_text.normalize(data, true), null,
 				{ updateSelect: _ele('chk-update-select').checked, depth: _ele('selDepth').value });
