@@ -43,9 +43,9 @@ module.exports = {
 					"</select> &nbsp; " +
 					"showProperty<select id='selShowProperty'>" +
 					"	<option value='ellipsis'>ellipsis</option>" +
-					"	<option value='first'>first</option>" +
+					"	<option value='first' selected>first</option>" +
 					"	<option value='true'>true</option>" +
-					"	<option value='' selected>false</option>" +
+					"	<option value=''>false</option>" +
 					"</select>" +
 					"</div>" +
 					"</div>"
@@ -58,9 +58,18 @@ module.exports = {
 					]
 				];
 
-				//.updateView(layeredText)
-				layered_text_treeview.initView(container, layered_text.normalize(data, true,
-					{ showProperty: document.getElementById('selShowProperty').value }));
+				/*
+				.updateView(el, layeredText, options)		//update view / init
+
+					options:
+						.dataset
+							map eid of tree-children/tree-container, to layered-text
+
+						.showProperty
+							"show"(true)/"ellipsis"/"first"/"hide"(false/null)
+				*/
+				layered_text_treeview.initView(container, layered_text.normalize(data, true),
+					{ showProperty: document.getElementById('selShowProperty').value });
 
 				container.addEventListener("click", function (evt) {
 					var target = evt.target;

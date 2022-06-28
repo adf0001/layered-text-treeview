@@ -1,6 +1,6 @@
 {
   "name": "layered-text-treeview",
-  "version": "0.1.3",
+  "version": "1.0.5",
   "description": "layered-text treeview",
   "main": "layered-text-treeview.js",
   "scripts": {

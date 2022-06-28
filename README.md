@@ -12,14 +12,8 @@ npm install layered-text-treeview
 var layered_text_treeview = require("layered-text-treeview");
 
 //dom
-document.getElementById('divResult3').innerHTML =
-	"<div id='name-click-msg' style='border:1px solid lightgrey;'>&nbsp;</div>" +
-	"<div>" +
-	"<span class='ht cmd' id='sp-cmd-add'>+add</span> " +
-	"</div>" +
-	"<div id='lt-treeview'></div>";
 
-var el = document.getElementById('lt-treeview');
+var container = document.getElementById('lt-container');
 
 var data = ["aaa", "bbb",
 	[
@@ -28,18 +22,16 @@ var data = ["aaa", "bbb",
 	]
 ];
 
-//.class(el, layeredText)
-var tv = new layered_text_treeview.class(el);
+/*
+.updateView(el, layeredText, options)		//update view / init
 
-tv.showProperty = "ellipsis";
+	options:
+		.dataset
+			map eid of tree-children/tree-container, to layered-text
 
-//.updateView(layeredText)
-tv.updateView(data);
-
-document.getElementById('sp-cmd-add').onclick = function () {
-	//.add(elNode, text, property, options)
-	tv.add(tv.getSelected() || el, "" + (new Date()), { tm: (new Date()).getTime() },
-		{ updateSelect: true });
-};
+		.showProperty
+			"show"(true)/"ellipsis"/"first"/"hide"(false/null)
+*/
+layered_text_treeview.initView(container, layered_text.normalize(data, true));
 
 ```
