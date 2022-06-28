@@ -24,7 +24,6 @@
     "ele-id": "^1.0.2",
     "is-simple-object": "^1.0.6",
     "layered-text": "^0.1.11",
-    "simple-text-treeview": "^0.1.7",
-    "ui-model-treeview": "^1.0.4"
+    "treeview-model": "^1.0.9"
   }
 }
