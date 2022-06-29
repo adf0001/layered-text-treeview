@@ -1,10 +1,6 @@
 
 // layered-text-treeview @ npm, layered-text treeview.
 
-//default css style
-var add_css_text = require("add-css-text");
-add_css_text(require("./layered-text-treeview.css"));
-
 //module exports
 
 Object.assign(exports,
