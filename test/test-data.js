@@ -148,7 +148,8 @@ module.exports = {
 							if (elSelOne) layered_text_treeview.removeProperty(elSelOne);
 						}
 						else if (cmdId === "sp-cmd-update") {
-							if (elSelOne) layered_text_treeview.update(elSelOne, newName, newProp);
+							if (elSelOne) layered_text_treeview.update(elSelOne,
+								{ text: newName, property: newProp });
 						}
 
 						if (elNew && !layered_text_treeview.isSelectedMultiple(elNew)) {
