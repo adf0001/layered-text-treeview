@@ -10,7 +10,7 @@ module.exports = {
 	"layered_text_treeview": function (done, treeviewModel) {
 		if (typeof window === "undefined") throw "disable for nodejs";
 
-		if (treeviewModel) layered_text_treeview = layered_text_treeview;
+		if (treeviewModel) layered_text_treeview = treeviewModel;
 
 		base_test_data["level-3"](
 			function (err, data) {
