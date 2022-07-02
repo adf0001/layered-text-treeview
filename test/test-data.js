@@ -156,16 +156,15 @@ module.exports = {
 							layered_text_treeview.clickName(elNew);
 						}
 						else {
-							var elSelOne = layered_text_treeview.getOneSelected(container);
-							if (elSelOne) layered_text_treeview.clickName(elSelOne);
+							treeview_model.clickContainer(container);
 						}
 					};
 
-				return "ui-test";
 			},
 			layered_text_treeview,
 			true
 		);
+		return "ui-test";
 	},
 
 };
