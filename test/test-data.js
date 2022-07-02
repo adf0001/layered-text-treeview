@@ -156,7 +156,7 @@ module.exports = {
 							layered_text_treeview.clickName(elNew);
 						}
 						else {
-							treeview_model.clickContainer(container);
+							layered_text_treeview.clickContainer(container);
 						}
 					};
 
