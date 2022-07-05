@@ -1,6 +1,6 @@
 {
   "name": "layered-text-treeview",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "layered-text treeview",
   "main": "layered-text-treeview.js",
   "scripts": {
@@ -24,6 +24,6 @@
     "ele-id": "^1.0.2",
     "is-simple-object": "^1.0.6",
     "layered-text": "^0.1.11",
-    "treeview-model": "^1.0.12"
+    "treeview-model": "^1.0.13"
   }
 }
