@@ -114,42 +114,47 @@ module.exports = {
 
 						var depthValue = parseInt(_ele('selDepth').value);
 
-						if (cmdId === "sp-cmd-add") {
-							elNew = layered_text_treeview.add(elSelOne || container,
-								{ text: newName, property: newProp }, null, !elSelOne);
+						try {
+							if (cmdId === "sp-cmd-add") {
+								elNew = layered_text_treeview.add(elSelOne || container,
+									{ text: newName, property: newProp }, null, !elSelOne);
+							}
+							else if (cmdId === "sp-cmd-add-lt") {
+								elNew = layered_text_treeview.add(elSelOne || container,
+									layered_text.normalize(data, true), { depth: depthValue }, !elSelOne);
+							}
+							else if (cmdId === "sp-cmd-insert") {
+								if (elSelOne) elNew = layered_text_treeview.insert(elSelOne,
+									{ text: newName, property: newProp });
+							}
+							else if (cmdId === "sp-cmd-insert-lt") {
+								if (elSelOne) elNew = layered_text_treeview.insert(elSelOne,
+									layered_text.normalize(data, true), { depth: depthValue });
+							}
+							else if (cmdId === "sp-cmd-insert-next") {
+								if (elSelOne) elNew = layered_text_treeview.insertNext(elSelOne,
+									{ text: newName, property: newProp });
+							}
+							else if (cmdId === "sp-cmd-insert-next-lt") {
+								if (elSelOne) elNew = layered_text_treeview.insertNext(elSelOne,
+									layered_text.normalize(data, true), { depth: depthValue });
+							}
+							else if (cmdId === "sp-cmd-remove") {
+								if (elSel) layered_text_treeview.remove(elSel);
+							}
+							else if (cmdId === "sp-cmd-remove-children") {
+								if (elSel) layered_text_treeview.removeChildren(elSel);
+							}
+							else if (cmdId === "sp-cmd-remove-prop") {
+								if (elSelOne) layered_text_treeview.removeProperty(elSelOne);
+							}
+							else if (cmdId === "sp-cmd-update") {
+								if (elSelOne) layered_text_treeview.update(elSelOne,
+									{ text: newName, property: newProp });
+							}
 						}
-						else if (cmdId === "sp-cmd-add-lt") {
-							elNew = layered_text_treeview.add(elSelOne || container,
-								layered_text.normalize(data, true), { depth: depthValue }, !elSelOne);
-						}
-						else if (cmdId === "sp-cmd-insert") {
-							if (elSelOne) elNew = layered_text_treeview.insert(elSelOne,
-								{ text: newName, property: newProp });
-						}
-						else if (cmdId === "sp-cmd-insert-lt") {
-							if (elSelOne) elNew = layered_text_treeview.insert(elSelOne,
-								layered_text.normalize(data, true), { depth: depthValue });
-						}
-						else if (cmdId === "sp-cmd-insert-next") {
-							if (elSelOne) elNew = layered_text_treeview.insertNext(elSelOne,
-								{ text: newName, property: newProp });
-						}
-						else if (cmdId === "sp-cmd-insert-next-lt") {
-							if (elSelOne) elNew = layered_text_treeview.insertNext(elSelOne,
-								layered_text.normalize(data, true), { depth: depthValue });
-						}
-						else if (cmdId === "sp-cmd-remove") {
-							if (elSel) layered_text_treeview.remove(elSel);
-						}
-						else if (cmdId === "sp-cmd-remove-children") {
-							if (elSel) layered_text_treeview.removeChildren(elSel);
-						}
-						else if (cmdId === "sp-cmd-remove-prop") {
-							if (elSelOne) layered_text_treeview.removeProperty(elSelOne);
-						}
-						else if (cmdId === "sp-cmd-update") {
-							if (elSelOne) layered_text_treeview.update(elSelOne,
-								{ text: newName, property: newProp });
+						catch (ex) {
+							console.log(ex + "");
 						}
 
 						if (elNew && !layered_text_treeview.isSelectedMultiple(elNew)) {
