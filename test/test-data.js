@@ -1,6 +1,6 @@
 
 //global variable, for html page, refer tpsvr @ npm.
-layered_text_treeview = require("../layered-text-treeview.js");
+layered_text_treeview = require("../index.js");
 layered_text = require("layered-text");
 
 base_test_data = require("treeview-model/test/test-data.js");
